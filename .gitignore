@@ -1,0 +1,24 @@
+# CLion
+.idea/
+
+# CMake build folders
+cmake-build-debug/
+cmake-build-release/
+cmake-build-*/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+Makefile
+
+# Binaries
+myRPG
+*.out
+*.o
+*.obj
+*.exe
+
+# Logs
+*.log

@@ -7,24 +7,9 @@
 #include "Weapon.h"
 
 
-int main() {
+int main()
+{
     std::cout << "Starting Game..." << std::endl;
-
-    Player plr;
-    Enemy enemy;
-    constexpr int dmg = 25;
-
-    int i = 0;
-    while (plr.isAlive())
-    {
-        enemy.attack(plr, dmg);
-        std::cout << "Round " << ++i << " | Took " << dmg << " damage | HP: " << plr.getHp() << std::endl;
-        sleep(1);
-        if (!plr.isAlive())
-        {
-            std::cout << "Player is dead" << std::endl;
-        }
-    }
-
+    std::cout << "Ending Game..." << std::endl;
     return 0;
 }

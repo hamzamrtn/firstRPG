@@ -4,6 +4,7 @@
 
 #include "Character.h"
 
+// getters
 bool Character::isAlive() const
 {
     return hp > 0;
@@ -19,9 +20,36 @@ int Character::getSpeed() const
     return speed;
 }
 
-void Character::attack(Character &other, const int dmg)
+Weapon& Character::getWeapon() const
 {
-    other.takeDamage(dmg);
+    return *weapon;
+}
+
+// setters
+void Character::changeSpeed(const int spd)
+{
+    speed = spd;
+}
+
+bool Character::setWeapon(const std::string& choice)
+{
+    delete weapon;
+    weapon = nullptr;
+    if (choice == "Sword")
+        weapon = new Sword;
+    else if (choice == "Mace")
+        weapon = new Mace;
+    else if (choice == "Bow")
+        weapon = new Bow;
+    else
+        return false;
+    return true;
+}
+
+// mechanics
+void Character::attack(Character &other)
+{
+    other.takeDamage(this->getWeapon().getWeaponDamage());
 }
 
 void Character::takeDamage(const int dmg)
@@ -29,9 +57,4 @@ void Character::takeDamage(const int dmg)
     hp -= dmg;
     if (hp < 0)
         hp = 0;
-}
-
-void Character::changeSpeed(const int spd)
-{
-    speed = spd;
 }

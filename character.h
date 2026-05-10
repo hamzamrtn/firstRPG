@@ -5,7 +5,7 @@
 #ifndef MYRPG_CHARACTER_H
 #define MYRPG_CHARACTER_H
 #include <string>
-#include "Weapon.h"
+#include "weapon.h"
 
 constexpr int PLR_SPEED = 7;
 constexpr int PLR_HP = 100;
@@ -15,8 +15,7 @@ constexpr int ENE_HP = 50;
 class Character {
 public:
     // general constructor
-    explicit Character(int hp, int speed, const std::string& weapon) : hp(hp), speed(speed)
-    {
+    explicit Character(int hp, int speed, const std::string &weapon) : hp(hp), speed(speed) {
         if (weapon == "Sword")
             this->weapon = new Sword();
         else if (weapon == "Mace")
@@ -28,16 +27,13 @@ public:
     }
 
     // copy constructor
-    Character(const Character& other) : hp(other.hp), speed(other.speed)
-    {
+    Character(const Character &other) : hp(other.hp), speed(other.speed) {
         weapon = other.weapon->clone();
     }
 
     // assignment operator
-    Character& operator=(const Character& other)
-    {
-        if (this != &other)
-        {
+    Character &operator=(const Character &other) {
+        if (this != &other) {
             hp = other.hp;
             speed = other.speed;
             delete weapon;
@@ -47,8 +43,7 @@ public:
     }
 
     // destructor
-    ~Character()
-    {
+    virtual ~Character() {
         delete weapon;
     }
 
@@ -59,44 +54,61 @@ public:
 
     [[nodiscard]] int getSpeed() const;
 
-    [[nodiscard]] Weapon& getWeapon() const;
+    [[nodiscard]] const Weapon &getWeapon() const;
 
     // setters
+    void setHp(int hp);
+
     void changeSpeed(int spd);
 
-    bool setWeapon(const std::string& choice);
+    bool setWeapon(const std::string &choice, int weapon_damage, bool weapon_enhanced, int enhanced_multiplier);
 
     // mechanics
     void attack(Character &other);
 
     void takeDamage(int dmg);
 
+    virtual void specialAbility() = 0;
+
 private:
     int hp;
     int speed;
     // TODO position / coordinates
-    Weapon* weapon;
+    Weapon *weapon;
 };
 
-class Player : public Character {
+class Player final : public Character {
 public:
     // player constructor
-    explicit Player(int hp = PLR_HP, int speed = PLR_SPEED, const std::string& weapon = "Fists") : Character(hp, speed, weapon)
-    {}
+    explicit Player(const int hp = PLR_HP, const int speed = PLR_SPEED,
+                    const std::string &weapon = "Fists") : Character(
+        hp, speed, weapon) {}
+
+    void specialAbility() override {
+        setHp(PLR_HP);
+    };
 };
 
 class Enemy : public Character {
 public:
     // enemy constructor
-    explicit Enemy(int hp = ENE_HP, int speed = ENE_SPEED, const std::string& weapon = "Fists") : Character(hp, speed, weapon)
-    {}
+    explicit Enemy(const int hp = ENE_HP, const int speed = ENE_SPEED, const std::string &weapon = "Fists") : Character(
+        hp, speed, weapon) {}
+
+    void specialAbility() override {
+        setHp(PLR_HP);
+    };
 };
 
-class Boss : public Enemy {
+class Boss final : public Enemy {
 public:
     // boss constructor
-    explicit Boss(int hp = 75, int speed = 10, const std::string& weapon = "Fists") : Enemy(hp, speed, weapon)
-    {}
+    explicit Boss(const int hp = 75, const int speed = 10, const std::string &weapon = "Fists") : Enemy(
+        hp, speed, weapon) {}
+
+    void specialAbility() override {
+        setHp(PLR_HP);
+    };
 };
 
 #endif //MYRPG_CHARACTER_H

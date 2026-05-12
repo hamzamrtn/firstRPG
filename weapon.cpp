@@ -3,24 +3,22 @@
 //
 
 #include "weapon.h"
+
 // getters
-int Weapon::getWeaponDamage() const {
-    return weaponDamage;
+int Weapon::GetWeaponDamage() const {
+    if (weapon_enhanced_) {
+        return weapon_damage_ * enhanced_multiplier_;
+    }
+    return weapon_damage_;
 }
 
-bool Weapon::isEnhanced() const {
-    return weaponEnhanced;
-}
+bool Weapon::IsEnhanced() const { return weapon_enhanced_; }
 
-int Weapon::getEnhancedMultiplier() const {
-    return enhancedMultiplier;
-};
+int Weapon::GetEnhancedMultiplier() const { return enhanced_multiplier_; };
 
 // setters
-void Weapon::setEnhanced(const bool enhanced) {
-    weaponEnhanced = enhanced;
-}
+void Weapon::SetEnhanced(const bool enhanced) { weapon_enhanced_ = enhanced; }
 
-void Weapon::setEnhancedMultiplier(const int multiplier) {
-    enhancedMultiplier = multiplier;
+void Weapon::SetEnhancedMultiplier(const int multiplier) {
+    enhanced_multiplier_ = multiplier;
 }

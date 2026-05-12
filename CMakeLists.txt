@@ -10,6 +10,8 @@ add_executable(myRPG
         character.h
         weapon.cpp
         weapon.h
+        battle.cpp
+        battle.h
 )
 
 find_package(SFML 3.1 REQUIRED COMPONENTS Graphics Window System)

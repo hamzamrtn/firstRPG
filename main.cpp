@@ -1,4 +1,6 @@
 #include <iostream>
+
+#include "battle.h"
 #include "character.h"
 #include "weapon.h"
 
@@ -6,33 +8,32 @@ int main() {
     Player plr;
     Enemy enemy;
 
-    std::cout << "=== Initial Status ===\n";
-    std::cout << "Player HP: " << plr.getHp() << '\n';
-    std::cout << "Enemy HP: " << enemy.getHp() << "\n\n";
+    std::cout << "=== Initial Status ===" << std::endl;
+    std::cout << "Player HP: " << plr.GetHp() << std::endl;
+    std::cout << "Enemy HP: " << enemy.GetHp() << "\n\n";
 
-    plr.setWeapon("Sword", 25, false, 1);
-    enemy.setWeapon("Mace", 15, false, 1);
+    plr.SetWeapon(WeaponType::kSword, 25, false, 1);
+    enemy.SetWeapon(WeaponType::kSword, 15, false, 1);
 
-    std::cout << "=== Battle Start ===\n";
+    std::cout << "=== Battle Start ===" << std::endl;
 
     int round = 1;
-    while (plr.isAlive() && enemy.isAlive()) {
-        std::cout << "Round " << round << '\n';
+    while (plr.IsAlive() && enemy.IsAlive()) {
+        std::cout << "Round " << round << std::endl;
 
-        plr.attack(enemy);
-        std::cout << "Player attacks -> Enemy HP: " << enemy.getHp() << '\n';
+        plr.Attack(enemy);
+        std::cout << "Player attacks -> Enemy HP: " << enemy.GetHp() << std::endl;
 
-        if (!enemy.isAlive())
-            break;
+        if (!enemy.IsAlive()) break;
 
-        enemy.attack(plr);
-        std::cout << "Enemy attacks -> Player HP: " << plr.getHp() << "\n\n";
+        enemy.Attack(plr);
+        std::cout << "Enemy attacks -> Player HP: " << plr.GetHp() << "\n\n";
 
         round++;
     }
 
     std::cout << "=== Result ===\n";
-    if (plr.isAlive())
+    if (plr.IsAlive())
         std::cout << "Player wins\n";
     else
         std::cout << "Enemy wins\n";

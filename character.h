@@ -2,113 +2,108 @@
 // Created by martin on 18/04/26.
 //
 
-#ifndef MYRPG_CHARACTER_H
-#define MYRPG_CHARACTER_H
-#include <string>
+#ifndef MYRPG_CHARACTER_H_H
+#define MYRPG_CHARACTER_H_H
+
 #include "weapon.h"
 
-constexpr int PLR_SPEED = 7;
-constexpr int PLR_HP = 100;
-constexpr int ENE_SPEED = 5;
-constexpr int ENE_HP = 50;
+constexpr int kPlrMaxHp = 100;
+constexpr int kPlrSpeed = 7;
+constexpr int kEneMaxHp = 100;
+constexpr int kEneSpeed = 5;
+constexpr int kBossMaxHp = 250;
+constexpr int kBossSpeed = 10;
+
+enum class CharacterState { kIdle, kAttacking, kDefending, kDead };
 
 class Character {
 public:
     // general constructor
-    explicit Character(int hp, int speed, const std::string &weapon) : hp(hp), speed(speed) {
-        if (weapon == "Sword")
-            this->weapon = new Sword();
-        else if (weapon == "Mace")
-            this->weapon = new Mace();
-        else if (weapon == "Bow")
-            this->weapon = new Bow();
-        else
-            this->weapon = new Fists();
-    }
+    explicit Character(const int max_hp, const int defense, const int speed,
+                       const WeaponType weapon_type);
 
-    // copy constructor
-    Character(const Character &other) : hp(other.hp), speed(other.speed) {
-        weapon = other.weapon->clone();
-    }
+    // COPY constructor
+    Character(const Character& other);
 
-    // assignment operator
-    Character &operator=(const Character &other) {
-        if (this != &other) {
-            hp = other.hp;
-            speed = other.speed;
-            delete weapon;
-            weapon = other.weapon->clone();
-        }
-        return *this;
-    }
+    // ASSIGNMENT operator
+    Character& operator=(const Character& other);
 
     // destructor
-    virtual ~Character() {
-        delete weapon;
-    }
+    virtual ~Character() { delete weapon_; }
 
     // getters
-    [[nodiscard]] bool isAlive() const;
-
-    [[nodiscard]] int getHp() const;
-
-    [[nodiscard]] int getSpeed() const;
-
-    [[nodiscard]] const Weapon &getWeapon() const;
+    [[nodiscard]] bool IsAlive() const;
+    [[nodiscard]] int GetHp() const;
+    [[nodiscard]] int GetDefense() const;
+    [[nodiscard]] int GetSpeed() const;
+    [[nodiscard]] const Weapon& GetWeapon() const;
+    [[nodiscard]] CharacterState GetState() const;
+    [[nodiscard]] int GetCriticalChance() const;
+    [[nodiscard]] int GetCriticalMultiplier() const;
 
     // setters
-    void setHp(int hp);
-
-    void changeSpeed(int spd);
-
-    bool setWeapon(const std::string &choice, int weapon_damage, bool weapon_enhanced, int enhanced_multiplier);
+    void SetSpeed(int spd);
+    bool SetWeapon(WeaponType weapon_type, int damage = kWeaponDamage,
+                   bool is_enhanced = false, int enhanced_multiplier = 1);
+    void SetState(CharacterState state);
+    void SetDefense(int defense);
+    void SetCriticalChance(int chance);
+    void SetCriticalMultiplier(int multiplier);
 
     // mechanics
-    void attack(Character &other);
+    void Attack(Character& other) const;
+    void TakeDamage(int dmg);
+    [[nodiscard]] int CalculateAttackDamage() const;
+    [[nodiscard]] int CalculateReceivedDamage(int dmg) const;
+    [[nodiscard]] bool IsCriticalHit() const;
+    void Heal(int amount);
+    void HealToFull();
 
-    void takeDamage(int dmg);
-
-    virtual void specialAbility() = 0;
+    virtual void SpecialAbility() = 0;
 
 private:
-    int hp;
-    int speed;
+    int hp_;
+    int max_hp_;
+    int defense_;
+    int speed_;
+    Weapon* weapon_;
+    CharacterState state_;
+    int critical_chance_;
+    int critical_multiplier_;
     // TODO position / coordinates
-    Weapon *weapon;
 };
 
 class Player final : public Character {
 public:
     // player constructor
-    explicit Player(const int hp = PLR_HP, const int speed = PLR_SPEED,
-                    const std::string &weapon = "Fists") : Character(
-        hp, speed, weapon) {}
+    explicit Player(const int max_hp = kPlrMaxHp, const int defense = 0,
+                    const int speed = kPlrSpeed,
+                    const WeaponType weapon_type = WeaponType::kFists)
+        : Character(max_hp, defense, speed, weapon_type) {}
 
-    void specialAbility() override {
-        setHp(PLR_HP);
-    };
+    void SpecialAbility() override { HealToFull(); };
 };
 
 class Enemy : public Character {
 public:
     // enemy constructor
-    explicit Enemy(const int hp = ENE_HP, const int speed = ENE_SPEED, const std::string &weapon = "Fists") : Character(
-        hp, speed, weapon) {}
+    explicit Enemy(const int max_hp = kEneMaxHp, const int defense = 0,
+                   const int speed = kEneSpeed,
+                   const WeaponType weapon_type = WeaponType::kFists)
+        : Character(max_hp, defense, speed, weapon_type) {}
 
-    void specialAbility() override {
-        setHp(PLR_HP);
-    };
+    void SpecialAbility() override { HealToFull(); };
 };
 
 class Boss final : public Enemy {
 public:
     // boss constructor
-    explicit Boss(const int hp = 75, const int speed = 10, const std::string &weapon = "Fists") : Enemy(
-        hp, speed, weapon) {}
+    explicit Boss(const int max_hp = kBossMaxHp, const int defense = 0,
+                  const int speed = kBossSpeed,
+                  const WeaponType weapon_type = WeaponType::kFists)
+        : Enemy(max_hp, defense, speed, weapon_type) {}
 
-    void specialAbility() override {
-        setHp(PLR_HP);
-    };
+    void SpecialAbility() override { HealToFull(); };
 };
 
-#endif //MYRPG_CHARACTER_H
+#endif  // MYRPG_CHARACTER_H_H

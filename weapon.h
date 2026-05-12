@@ -1,86 +1,96 @@
-//
 // Created by martin on 18/04/26.
-//
 
 #ifndef MYRPG_WEAPON_H
 #define MYRPG_WEAPON_H
 
-constexpr int FIST_DAMAGE = 5;
-constexpr int WEAPON_DAMAGE = 10;
+constexpr int kFistDamage = 5;
+constexpr int kWeaponDamage = 10;
+
+enum class WeaponType { kSword, kMace, kBow, kFists };
 
 class Weapon {
 public:
     // general constructor
-    explicit Weapon(int weaponDamage = WEAPON_DAMAGE, bool weaponEnhanced = false, int enhancedMultiplier = 1)
-        : weaponDamage(weaponDamage), weaponEnhanced(weaponEnhanced), enhancedMultiplier(enhancedMultiplier) {
-        if (weaponDamage <= 0) this->weaponDamage = WEAPON_DAMAGE;
-        if (enhancedMultiplier < 1) this->enhancedMultiplier = 1;
+    explicit Weapon(const int weapon_damage = kWeaponDamage,
+                    const bool weapon_enhanced = false,
+                    const int enhanced_multiplier = 1)
+        : weapon_damage_(weapon_damage),
+          weapon_enhanced_(weapon_enhanced),
+          enhanced_multiplier_(enhanced_multiplier) {
+        if (weapon_damage <= 0) {
+            weapon_damage_ = kWeaponDamage;
+        }
+
+        if (enhanced_multiplier < 1) {
+            enhanced_multiplier_ = 1;
+        }
     }
 
     // virtual destructor
     virtual ~Weapon() = default;
 
     // getters
-    [[nodiscard]] int getWeaponDamage() const;
+    [[nodiscard]] int GetWeaponDamage() const;
 
-    [[nodiscard]] bool isEnhanced() const;
+    [[nodiscard]] bool IsEnhanced() const;
 
-    [[nodiscard]] int getEnhancedMultiplier() const;
+    [[nodiscard]] int GetEnhancedMultiplier() const;
 
     // setters
-    void setEnhanced(bool enhanced);
+    void SetEnhanced(bool enhanced);
 
-    void setEnhancedMultiplier(int multiplier);
+    void SetEnhancedMultiplier(int multiplier);
 
     // methods
-    virtual Weapon *clone() const = 0;
+    virtual Weapon* Clone() const = 0;
 
 private:
     // general weapon attributes
-    int weaponDamage;
-    bool weaponEnhanced = false;
-    int enhancedMultiplier;
-    // TODO attack range
+    int weapon_damage_;
+    bool weapon_enhanced_;
+    int enhanced_multiplier_;
+
+    // TODO: attack range
 };
 
-class Fists : public Weapon {
+class Fists final : public Weapon {
 public:
-    explicit Fists(int weaponDamage = FIST_DAMAGE, bool weaponEnhanced = false, int enhancedMultiplier = 1)
-        : Weapon(weaponDamage, weaponEnhanced, enhancedMultiplier) {}
+    explicit Fists(const int weapon_damage = kFistDamage,
+                   const bool weapon_enhanced = false,
+                   const int enhanced_multiplier = 1)
+        : Weapon(weapon_damage, weapon_enhanced, enhanced_multiplier) {}
 
-    Weapon *clone() const override {
-        return new Fists(*this);
-    }
+    Weapon* Clone() const override { return new Fists(*this); }
 };
 
-class Sword : public Weapon {
+class Sword final : public Weapon {
 public:
-    explicit Sword(int weaponDamage = WEAPON_DAMAGE, bool weaponEnhanced = false, int enhancedMultiplier = 1)
-        : Weapon(weaponDamage, weaponEnhanced, enhancedMultiplier) {}
+    explicit Sword(const int weapon_damage = kWeaponDamage,
+                   const bool weapon_enhanced = false,
+                   const int enhanced_multiplier = 1)
+        : Weapon(weapon_damage, weapon_enhanced, enhanced_multiplier) {}
 
-    Weapon *clone() const override {
-        return new Sword(*this);
-    }
+    Weapon* Clone() const override { return new Sword(*this); }
 };
 
-class Mace : public Weapon {
+class Mace final : public Weapon {
 public:
-    explicit Mace(int weaponDamage = WEAPON_DAMAGE, bool weaponEnhanced = false, int enhancedMultiplier = 1)
-        : Weapon(weaponDamage, weaponEnhanced, enhancedMultiplier) {}
+    explicit Mace(const int weapon_damage = kWeaponDamage,
+                  const bool weapon_enhanced = false,
+                  const int enhanced_multiplier = 1)
+        : Weapon(weapon_damage, weapon_enhanced, enhanced_multiplier) {}
 
-    Weapon *clone() const override {
-        return new Mace(*this);
-    }
+    Weapon* Clone() const override { return new Mace(*this); }
 };
 
-class Bow : public Weapon {
+class Bow final : public Weapon {
 public:
-    explicit Bow(int weaponDamage = WEAPON_DAMAGE, bool weaponEnhanced = false, int enhancedMultiplier = 1)
-        : Weapon(weaponDamage, weaponEnhanced, enhancedMultiplier) {}
+    explicit Bow(const int weapon_damage = kWeaponDamage,
+                 const bool weapon_enhanced = false,
+                 const int enhanced_multiplier = 1)
+        : Weapon(weapon_damage, weapon_enhanced, enhanced_multiplier) {}
 
-    Weapon *clone() const override {
-        return new Bow(*this);
-    }
+    Weapon* Clone() const override { return new Bow(*this); }
 };
 
-#endif //MYRPG_WEAPON_H
+#endif  // MYRPG_WEAPON_H
